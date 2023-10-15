@@ -10,7 +10,11 @@
   "dependencies": {
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.0.18",
+    "@monaco-editor/loader": "^1.4.0",
     "axios": "^1.5.1",
+    "monaco-editor": "^0.44.0",
+    "monaco-editor-webpack-plugin": "^7.1.0",
+    "monaco-languageclient": "^6.5.3",
     "vue": "^3.3.4"
   },
   "devDependencies": {

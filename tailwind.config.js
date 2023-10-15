@@ -9,6 +9,9 @@ export default {
     fontFamily: {
       'text': 'SF Pro Display',
       'code': 'Cascadia Code'
+    },
+    gridTemplateRows: {
+      'mobile-task': '66% 33% 100%'
     }
   },
   plugins: [],
