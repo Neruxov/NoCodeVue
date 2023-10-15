@@ -5,13 +5,17 @@ export default {
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
-    fontFamily: {
-      'text': 'SF Pro Display',
-      'code': 'Cascadia Code'
-    },
-    gridTemplateRows: {
-      'mobile-task': '66% 33% 100%'
+    extend: {
+      fontFamily: {
+        'text': 'SF Pro Display',
+        'code': 'Cascadia Code'
+      },
+      gridTemplateRows: {
+        'mobile-task': '66% 33% 100%'
+      },
+      colors: {
+        'neutral-850': '#202020'
+      }
     }
   },
   plugins: [],

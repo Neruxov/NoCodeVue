@@ -2,12 +2,7 @@
     "base": "vs-dark",
     "inherit": true,
     "colors": {
-        "editor.background": "#262626"
+        "editor.background": "#202020"
     },
-    "rules": [
-        {
-            "background": "#262626",
-            "token": ""
-        }
-    ]
+    "rules": []
 }
