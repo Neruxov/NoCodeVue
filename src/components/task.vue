@@ -250,20 +250,24 @@ const selectTest = (test) => {
 onMounted(async () => {
     loadTask()
     loader.init().then((monaco) => {
-        fetch('/src/assets/vs-dark-v2.json').then((response) => {
-            return response.json()
-        }).then((res) => {
-            monaco.editor.defineTheme('vs-dark-v2', res)
-        }).then(() => {
-            editor = monaco.editor.create(document.getElementById('editor'), {
-                language: 'python',
-                theme: 'vs-dark-v2',
-                automaticLayout: true,
-                fontSize: 16,
-                minimap: {
-                    enabled: false
-                }
-            })
+        const theme = {
+            "base": "vs-dark",
+            "inherit": true,
+            "colors": {
+                "editor.background": "#202020"
+            },
+            "rules": []
+        }
+
+        monaco.editor.defineTheme('vs-dark-v2', theme)
+        editor = monaco.editor.create(document.getElementById('editor'), {
+            language: 'python',
+            theme: 'vs-dark-v2',
+            automaticLayout: true,
+            fontSize: 16,
+            minimap: {
+                enabled: false
+            }
         })
     })
 })

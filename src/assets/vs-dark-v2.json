@@ -1,8 +1,0 @@
-{
-    "base": "vs-dark",
-    "inherit": true,
-    "colors": {
-        "editor.background": "#202020"
-    },
-    "rules": []
-}
