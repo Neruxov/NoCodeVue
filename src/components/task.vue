@@ -5,10 +5,10 @@
             <div class="text-xl pt-5" v-html="description"></div>
 
             <h3 class="text-2xl font-bold pt-5 mb-1">Пример вводных данных</h3>
-            <code>{{ testInput }}</code>
+            <code>{{ exampleInput }}</code>
 
             <h3 class="text-2xl font-bold pt-5 mb-1">Пример выходных данных</h3>
-            <code>{{ testOutput }}</code>
+            <code>{{ exampleOutput }}</code>
         </div>
         <div class="grid-area-b bg-neutral-900 overflow-auto p-5 rounded-xl">
             <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
@@ -126,6 +126,7 @@ code, pre {
 </style>
 
 <script setup>
+import router from '../router'
 import { onMounted, ref } from 'vue'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
@@ -133,12 +134,13 @@ import loader from "@monaco-editor/loader";
 
 const props = defineProps({
     id: Number,
-    title: String,
-    description: String,
-    testInput: String,
-    testOutput: String,
-    solution: Array,
 })
+
+const title = ref("loading...")
+const description = ref("loading...")
+const exampleInput = ref("loading...")
+const exampleOutput = ref("loading...")
+const solution = ref([])
 
 const languages = [
     { name: 'Python', data: 'PYTHON' },
@@ -183,6 +185,22 @@ const testResults = {
 
 const tests = ref([])
 const selectedTest = ref({})
+
+const loadTask = () => {
+    fetch('https://judger.neruxov.xyz/api/v1/tasks/get?id=' + props.id).then(response => {
+        if (response.status != 200) throw new Error('Task not found')
+        return response.json();
+    }).then(data => {
+        title.value = data.title;
+        description.value = data.description;
+        exampleInput.value = data.exampleInput;
+        exampleOutput.value = data.exampleOutput;
+        solution.value = data.solution;
+    }).catch(error => {
+        console.log(error);
+        router.push({ name: '404' })
+    });
+}
 
 const submitSolution = () => {
     if (judging.value) return
@@ -230,6 +248,7 @@ const selectTest = (test) => {
 }
 
 onMounted(async () => {
+    loadTask()
     loader.init().then((monaco) => {
         fetch('/src/assets/vs-dark-v2.json').then((response) => {
             return response.json()
