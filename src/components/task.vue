@@ -263,6 +263,7 @@ onMounted(async () => {
         editor = monaco.editor.create(document.getElementById('editor'), {
             language: 'python',
             theme: 'vs-dark-v2',
+            fontFamily: 'Cascadia Code',
             automaticLayout: true,
             fontSize: 16,
             minimap: {
