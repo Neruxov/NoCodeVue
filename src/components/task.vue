@@ -1,14 +1,18 @@
 <template>
     <div class="grid grid-rows-mobile-task md:grid-rows-3 grid-cols-1 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full absolute p-3">
-        <div class="grid-area-a bg-neutral-900 overflow-auto p-5 rounded-xl">
-            <h1 class="font-bold text-5xl text-center">Задача №{{ id }} - {{ title }}</h1>
-            <div class="text-xl pt-5" v-html="description"></div>
+        <div class="grid-area-a bg-neutral-900 overflow-auto p-5 rounded-xl justify-between flex flex-col relative">
+            <div>
+                <h1 class="font-bold text-5xl text-center">Задача №{{ id }} - {{ title }}</h1>
+                <div class="text-xl pt-5" v-html="description"></div>
 
-            <h3 class="text-2xl font-bold pt-5 mb-1">Пример вводных данных</h3>
-            <code>{{ exampleInput }}</code>
+                <h3 class="text-2xl font-bold pt-5 mb-1">Пример вводных данных</h3>
+                <code>{{ exampleInput }}</code>
 
-            <h3 class="text-2xl font-bold pt-5 mb-1">Пример выходных данных</h3>
-            <code>{{ exampleOutput }}</code>
+                <h3 class="text-2xl font-bold pt-5 mb-1">Пример выходных данных</h3>
+                <code>{{ exampleOutput }}</code>
+            </div>
+            
+            <p class="text-center text-xl text-gray-400">made with 💖 by <a class="text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
         </div>
         <div class="grid-area-b bg-neutral-900 overflow-auto p-5 rounded-xl">
             <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
@@ -186,7 +190,7 @@ const testResults = {
 const tests = ref([])
 const selectedTest = ref({})
 
-const loadTask = () => {
+const loadTask = async () => {
     fetch('https://judger.neruxov.xyz/api/v1/tasks/get?id=' + props.id).then(response => {
         if (response.status != 200) throw new Error('Task not found')
         return response.json();
@@ -202,7 +206,7 @@ const loadTask = () => {
     });
 }
 
-const submitSolution = () => {
+const submitSolution = async () => {
     if (judging.value) return
     if (editor.getValue().length == 0) return
 
@@ -239,11 +243,11 @@ const submitSolution = () => {
     })
 }
 
-const changeEditorLanguage = () => {
+const changeEditorLanguage = async () => {
     monaco.editor.setModelLanguage(editor.getModel(), selectedLanguage.value.data.toLowerCase())
 }
 
-const selectTest = (test) => {
+const selectTest = async (test) => {
     selectedTest.value = test
 }
 
