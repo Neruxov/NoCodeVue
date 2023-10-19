@@ -12,13 +12,13 @@
 
                 <div class="p-5">
                     <div v-if="selectedTab.id == 'solution'">
-                        <p v-if="explanation == null" class="pb-1 text-gray-300">Объяснение отсутсвует.</p>
+                        <p v-if="explanation == null" class="pb-1 text-gray-300">Объяснение отсутствует.</p>
                         <div v-if="explanation != null" 
                              class="text-xl pb-3" 
                              v-html="explanation">
                         </div>
                         
-                        <p v-if="solutions.length == 0" class="text-gray-300">Решений отсутсвует.</p>
+                        <p v-if="solutions.length == 0" class="text-gray-300">Решения отсутствуют.</p>
                         <div v-if="solutions.length > 0">
                             <div class="bg-neutral-875 p-2 pl-4 pr-4 flex rounded-t-xl justify-between">
                                 <div class="flex gap-3">
@@ -41,10 +41,10 @@
                         <div class="text-xl pt-3" v-html="description"></div>
 
                         <h3 class="text-2xl font-bold pt-3 mb-1">Пример вводных данных</h3>
-                        <code>{{ exampleInput }}</code>
+                        <pre>{{ exampleInput }}</pre>
 
                         <h3 class="text-2xl font-bold pt-3 mb-1">Пример выходных данных</h3>
-                        <code>{{ exampleOutput }}</code>
+                        <pre>{{ exampleOutput }}</pre>
                     </div>
                 </div>
             </div>
@@ -279,9 +279,13 @@ const loadTask = async () => {
 
         solutions.value = solutionsNew
         selectedSolution.value = solutionsNew[0]
-        colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
-            selectedSolutionColorized.value = response
-        })
+        if (selectedSolution.value != null) {
+            colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
+                selectedSolutionColorized.value = response
+            })
+        } else {
+            selectedSolutionColorized.value = ""
+        }
     }).catch(error => {
         console.log(error);
         router.push({ name: '404' })
