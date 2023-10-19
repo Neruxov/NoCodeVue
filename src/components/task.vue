@@ -298,7 +298,6 @@ const loadTask = async () => {
         if (selectedSolution.value != null) {
             colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
                 selectedSolutionColorized.value = response
-                alert('done!')
             })
         } else {
             selectedSolutionColorized.value = ""
