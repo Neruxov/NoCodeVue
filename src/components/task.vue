@@ -40,10 +40,18 @@
                         <h1 class="font-bold text-4xl">{{ id }}. {{ title }}</h1>
                         <div class="text-xl pt-3" v-html="description"></div>
 
-                        <h3 class="text-2xl font-bold pt-3 mb-1">Пример вводных данных</h3>
+                        <div class="flex justify-between">
+                            <h3 class="text-2xl font-bold pt-3 mb-1">Пример вводных данных</h3>
+                            <button class="text-neutral-400 hover:text-white"
+                                            @click="copyText(exampleInput)">Скопировать</button>
+                        </div>
                         <pre>{{ exampleInput }}</pre>
 
-                        <h3 class="text-2xl font-bold pt-3 mb-1">Пример выходных данных</h3>
+                        <div class="flex justify-between">
+                            <h3 class="text-2xl font-bold pt-3 mb-1">Пример выходных данных</h3>
+                            <button class="text-neutral-400 hover:text-white"
+                                            @click="copyText(exampleOutput)">Скопировать</button>
+                        </div>
                         <pre>{{ exampleOutput }}</pre>
                     </div>
                 </div>
@@ -254,10 +262,6 @@ const editorSettings = {
     }
 }
 
-const colorizeCode = async (code, language) => {
-    return monaco.editor.colorize(code, language, editorSettings)
-}
-
 const loadTask = async () => {
     fetch('https://judger.neruxov.xyz/api/v1/tasks/get?id=' + props.id).then(response => {
         if (response.status != 200) throw new Error('Task not found')
@@ -350,6 +354,10 @@ const changeSolution = async (solution) => {
 
 const copyText = async (code) => {
     navigator.clipboard.writeText(code)
+}
+
+const colorizeCode = async (code, language) => {
+    return monaco.editor.colorize(code, language, editorSettings)
 }
 
 onMounted(async () => {
