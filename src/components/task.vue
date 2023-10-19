@@ -40,15 +40,15 @@
                         <h1 class="font-bold text-4xl">{{ id }}. {{ title }}</h1>
                         <div class="text-xl pt-3" v-html="description"></div>
 
-                        <div class="flex justify-between">
-                            <h3 class="text-2xl font-bold pt-3 mb-1">Пример вводных данных</h3>
+                        <div class="flex justify-between pt-3 mb-1">
+                            <h3 class="text-2xl font-bold">Пример вводных данных</h3>
                             <button class="text-neutral-400 hover:text-white"
                                             @click="copyText(exampleInput)">Скопировать</button>
                         </div>
                         <pre>{{ exampleInput }}</pre>
 
-                        <div class="flex justify-between">
-                            <h3 class="text-2xl font-bold pt-3 mb-1">Пример выходных данных</h3>
+                        <div class="flex justify-between pt-3 mb-1">
+                            <h3 class="text-2xl font-bold">Пример выходных данных</h3>
                             <button class="text-neutral-400 hover:text-white"
                                             @click="copyText(exampleOutput)">Скопировать</button>
                         </div>
