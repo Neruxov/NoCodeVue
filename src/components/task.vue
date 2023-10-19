@@ -1,18 +1,40 @@
 <template>
     <div class="grid grid-rows-mobile-task md:grid-rows-3 grid-cols-1 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full absolute p-3">
-        <div class="grid-area-a bg-neutral-900 overflow-auto p-5 rounded-xl justify-between flex flex-col relative">
+        <div class="grid-area-a bg-neutral-900 overflow-auto rounded-xl justify-between flex flex-col relative">         
             <div>
-                <h1 class="font-bold text-5xl text-center">Задача №{{ id }} - {{ title }}</h1>
-                <div class="text-xl pt-5" v-html="description"></div>
+                <div class="bg-neutral-850 p-3 pl-4 flex gap-3">
+                    <button class="text-gray-300 hover:text-white"
+                            v-for="tab in tabs"
+                            :class="selectedTab.id == tab.id ? 'text-white' : ''"
+                            @click="changeTab(tab)"
+                            >{{ tab.name }}</button>
+                </div>
 
-                <h3 class="text-2xl font-bold pt-5 mb-1">Пример вводных данных</h3>
-                <code>{{ exampleInput }}</code>
+                <div class="p-5">
+                    <div v-if="selectedTab.id == 'solution'">
+                        <p v-if="solutions.length == 0" class="text-gray-300">Решений нет.</p>
+                        <div v-if="solutions.length > 0">
+                            <div>
 
-                <h3 class="text-2xl font-bold pt-5 mb-1">Пример выходных данных</h3>
-                <code>{{ exampleOutput }}</code>
+                            </div>
+                            <code>{{ selectedSolution.source }}</code>
+                        </div>
+                    </div>
+
+                    <div v-if="selectedTab.id == 'task'">
+                        <h1 class="font-bold text-4xl">{{ id }}. {{ title }}</h1>
+                        <div class="text-xl pt-3" v-html="description"></div>
+
+                        <h3 class="text-2xl font-bold pt-3 mb-1">Пример вводных данных</h3>
+                        <code>{{ exampleInput }}</code>
+
+                        <h3 class="text-2xl font-bold pt-3 mb-1">Пример выходных данных</h3>
+                        <code>{{ exampleOutput }}</code>
+                    </div>
+                </div>
             </div>
             
-            <p class="text-center text-xl text-gray-400">made with 💖 by <a class="text-gray-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+            <p class="pb-5 text-center text-xl text-gray-400">made with 💖 by <a class="text-gray-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
         </div>
         <div class="grid-area-b bg-neutral-900 overflow-auto p-5 rounded-xl">
             <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
@@ -144,7 +166,9 @@ const title = ref("loading...")
 const description = ref("loading...")
 const exampleInput = ref("loading...")
 const exampleOutput = ref("loading...")
-const solution = ref([])
+
+const solutions = ref([])
+const selectedSolution = ref({})
 
 const languages = [
     { name: 'Python', data: 'PYTHON' },
@@ -152,8 +176,6 @@ const languages = [
     { name: 'C++', data: 'CPP' }
 ]
 const selectedLanguage = ref(languages[0])
-
-let editor = null
 
 const judging = ref(false)
 
@@ -190,6 +212,14 @@ const testResults = {
 const tests = ref([])
 const selectedTest = ref({})
 
+const tabs = [
+    { name: 'Условие', id: 'task' },
+    { name: 'Решение', id: 'solution' },
+]
+const selectedTab = ref(tabs[0])
+
+let editor = null
+
 const loadTask = async () => {
     fetch('https://judger.neruxov.xyz/api/v1/tasks/get?id=' + props.id).then(response => {
         if (response.status != 200) throw new Error('Task not found')
@@ -199,7 +229,17 @@ const loadTask = async () => {
         description.value = data.description;
         exampleInput.value = data.exampleInput;
         exampleOutput.value = data.exampleOutput;
-        solution.value = data.solution;
+
+        const solutionsNew = []
+        for (const [key, value] of Object.entries(data.solutions)) {
+            solutionsNew.push({
+                language: key,
+                source: value,
+            })
+        }
+
+        solutions.value = solutionsNew
+        selectedSolution.value = solutionsNew[0]
     }).catch(error => {
         console.log(error);
         router.push({ name: '404' })
@@ -249,6 +289,10 @@ const changeEditorLanguage = async () => {
 
 const selectTest = async (test) => {
     selectedTest.value = test
+}
+
+const changeTab = async (tab) => {
+    selectedTab.value = tab
 }
 
 onMounted(async () => {
