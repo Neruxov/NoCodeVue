@@ -72,14 +72,26 @@
                             @click="selectTest(test)"
                             >{{ testResults[test.result] }}</button>
                 </div>
-                <div class="pl-5">
-                    <h3 class=" text-xl font-bold">Вводные данные</h3>
+                <div class="pl-5 w-full">
+                    <div class="flex justify-between">
+                        <h3 class="text-xl font-bold">Вводные данные</h3>
+                        <button class="text-neutral-400 hover:text-white"
+                                        @click="copyText(selectedTest.input)">Скопировать</button>
+                    </div>
                     <pre>{{ selectedTest.input }}</pre>
 
-                    <h3 class="mt-2 text-xl font-bold">Вводные данные</h3>
+                    <div class="mt-2 flex justify-between">
+                        <h3 class="text-xl font-bold">Правильный вывод</h3>
+                        <button class="text-neutral-400 hover:text-white"
+                                        @click="copyText(selectedTest.correctOutput)">Скопировать</button>
+                    </div>
                     <pre>{{ selectedTest.correctOutput }}</pre>
 
-                    <h3 class="mt-2 text-xl font-bold">Ваш вывод</h3>
+                    <div class="mt-2 flex justify-between">
+                        <h3 class="text-xl font-bold">Ваш вывод</h3>
+                        <button class="text-neutral-400 hover:text-white"
+                                        @click="copyText(selectedTest.output)">Скопировать</button>
+                    </div>
                     <pre>{{ selectedTest.output }}</pre>
                 </div>
             </div>
@@ -286,6 +298,7 @@ const loadTask = async () => {
         if (selectedSolution.value != null) {
             colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
                 selectedSolutionColorized.value = response
+                alert('done!')
             })
         } else {
             selectedSolutionColorized.value = ""
