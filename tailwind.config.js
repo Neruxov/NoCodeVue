@@ -14,7 +14,8 @@ export default {
         'mobile-task': '66% 33% 100%'
       },
       colors: {
-        'neutral-850': '#202020'
+        'neutral-925': '#202020',
+        'neutral-875': '#262626'
       }
     }
   },

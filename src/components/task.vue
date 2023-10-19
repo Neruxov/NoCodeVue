@@ -2,7 +2,7 @@
     <div class="grid grid-rows-mobile-task md:grid-rows-3 grid-cols-1 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full absolute p-3">
         <div class="grid-area-a bg-neutral-900 overflow-auto rounded-xl justify-between flex flex-col relative">         
             <div>
-                <div class="bg-neutral-850 p-3 pl-4 flex gap-3">
+                <div class="bg-neutral-925 p-3 pl-4 flex gap-3">
                     <button class="text-gray-300 hover:text-white"
                             v-for="tab in tabs"
                             :class="selectedTab.id == tab.id ? 'text-white' : ''"
@@ -12,12 +12,27 @@
 
                 <div class="p-5">
                     <div v-if="selectedTab.id == 'solution'">
-                        <p v-if="solutions.length == 0" class="text-gray-300">Решений нет.</p>
+                        <p v-if="explanation == null" class="pb-1 text-gray-300">Объяснение отсутсвует.</p>
+                        <div v-if="explanation != null" 
+                             class="text-xl pb-3" 
+                             v-html="explanation">
+                        </div>
+                        
+                        <p v-if="solutions.length == 0" class="text-gray-300">Решений отсутсвует.</p>
                         <div v-if="solutions.length > 0">
-                            <div>
-
+                            <div class="bg-neutral-875 p-2 pl-4 pr-4 flex rounded-t-xl justify-between">
+                                <div class="flex gap-3">
+                                    <button class="text-gray-300 hover:text-white"
+                                            v-for="solution in solutions"
+                                            :class="solution.language == selectedSolution.language ? 'text-white' : ''"
+                                            @click="changeSolution(solution)"
+                                    >{{ languageNames[solution.language] }}</button>
+                                </div>
+                                <button class="text-neutral-400 hover:text-white"
+                                        @click="copyText(selectedSolution.source)">Скопировать</button>
                             </div>
-                            <code>{{ selectedSolution.source }}</code>
+                            <div class="p-2 bg-neutral-925 rounded-b-xl font-code"
+                                 v-html="selectedSolutionColorized"></div>
                         </div>
                     </div>
 
@@ -34,7 +49,7 @@
                 </div>
             </div>
             
-            <p class="pb-5 text-center text-xl text-gray-400">made with 💖 by <a class="text-gray-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+            <p class="pb-5 text-center text-xl text-neutral-400">made with 💖 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
         </div>
         <div class="grid-area-b bg-neutral-900 overflow-auto p-5 rounded-xl">
             <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
@@ -42,7 +57,7 @@
                     @click="submitSolution" :disabled="judging">{{ judging ? "Проверка..." : "Сдать решение" }}</button>
 
             <div class="flex" v-if="tests.length > 0">
-                <div class="bg-neutral-850 p-2 pb-1 pt-1 w-[7rem] rounded-xl">
+                <div class="bg-neutral-925 p-2 pb-1 pt-1 w-[7rem] rounded-xl">
                     <button class="w-full mb-1.5 mt-1.5 h-[3rem] text-xl font-bold rounded-xl justify-center flex items-center"
                             :class="selectedTest.id == test.id ? activeTestColors[test.result] : testColors[test.result]"
                             v-for="test in tests"
@@ -65,7 +80,7 @@
             <Listbox v-model="selectedLanguage" @update:model-value="changeEditorLanguage">
                 <div class="relative mt-1">
                     <ListboxButton 
-                    class="relative w-full cursor-default rounded-lg bg-neutral-850 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 sm:text-sm"
+                    class="relative w-full cursor-default rounded-lg bg-neutral-925 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 sm:text-sm"
                     >
                     <span class="block truncate text-white text-base font-medium">{{ selectedLanguage.name }}</span>
                     <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -77,7 +92,7 @@
                     </ListboxButton>
 
                     <ListboxOptions
-                        class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-neutral-850 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10 absolute">
+                        class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-neutral-925 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10 absolute">
                         <ListboxOption
                         v-slot="{ active, selected }"
                         v-for="language in languages"
@@ -107,7 +122,7 @@
                 </div>
             </Listbox>
 
-            <div id="editor" class="font-code w-full h-[calc(100%-3.3rem)] mt-2 pt-2 pb-2 rounded-xl bg-neutral-850 relative z-0"></div>
+            <div id="editor" class="font-code w-full h-[calc(100%-3.3rem)] mt-2 pt-2 pb-2 rounded-xl bg-neutral-925 relative z-0"></div>
         </div>
     </div>
 </template>
@@ -166,9 +181,17 @@ const title = ref("loading...")
 const description = ref("loading...")
 const exampleInput = ref("loading...")
 const exampleOutput = ref("loading...")
+const explanation = ref("loading...")
 
 const solutions = ref([])
 const selectedSolution = ref({})
+const selectedSolutionColorized = ref(null)
+
+const languageNames = {
+    'PYTHON': 'Python',
+    'JAVA': 'Java',
+    'CPP': 'C++'
+}
 
 const languages = [
     { name: 'Python', data: 'PYTHON' },
@@ -220,6 +243,21 @@ const selectedTab = ref(tabs[0])
 
 let editor = null
 
+const editorSettings = {
+    language: 'python',
+    theme: 'vs-dark-v2',
+    fontFamily: 'Cascadia Code',
+    automaticLayout: true,
+    fontSize: 16,
+    minimap: {
+        enabled: false
+    }
+}
+
+const colorizeCode = async (code, language) => {
+    return monaco.editor.colorize(code, language, editorSettings)
+}
+
 const loadTask = async () => {
     fetch('https://judger.neruxov.xyz/api/v1/tasks/get?id=' + props.id).then(response => {
         if (response.status != 200) throw new Error('Task not found')
@@ -229,6 +267,7 @@ const loadTask = async () => {
         description.value = data.description;
         exampleInput.value = data.exampleInput;
         exampleOutput.value = data.exampleOutput;
+        explanation.value = data.explanation;
 
         const solutionsNew = []
         for (const [key, value] of Object.entries(data.solutions)) {
@@ -240,6 +279,9 @@ const loadTask = async () => {
 
         solutions.value = solutionsNew
         selectedSolution.value = solutionsNew[0]
+        colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
+            selectedSolutionColorized.value = response
+        })
     }).catch(error => {
         console.log(error);
         router.push({ name: '404' })
@@ -295,6 +337,17 @@ const changeTab = async (tab) => {
     selectedTab.value = tab
 }
 
+const changeSolution = async (solution) => {
+    selectedSolution.value = solution
+    colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
+        selectedSolutionColorized.value = response
+    })
+}
+
+const copyText = async (code) => {
+    navigator.clipboard.writeText(code)
+}
+
 onMounted(async () => {
     loadTask()
     loader.init().then((monaco) => {
@@ -308,16 +361,7 @@ onMounted(async () => {
         }
 
         monaco.editor.defineTheme('vs-dark-v2', theme)
-        editor = monaco.editor.create(document.getElementById('editor'), {
-            language: 'python',
-            theme: 'vs-dark-v2',
-            fontFamily: 'Cascadia Code',
-            automaticLayout: true,
-            fontSize: 16,
-            minimap: {
-                enabled: false
-            }
-        })
+        editor = monaco.editor.create(document.getElementById('editor'), editorSettings)
     })
 })
 </script>
