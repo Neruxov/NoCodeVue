@@ -87,12 +87,14 @@
                     </div>
                     <pre>{{ selectedTest.correctOutput }}</pre>
 
-                    <div class="mt-2 flex justify-between">
-                        <h3 class="text-xl font-bold">Ваш вывод</h3>
-                        <button class="text-neutral-400 hover:text-white"
-                                        @click="copyText(selectedTest.output)">Скопировать</button>
-                    </div>
+                    <h3 class="mt-2 text-xl font-bold">Ваш вывод</h3>
                     <pre>{{ selectedTest.output }}</pre>
+
+                    <h3 class="mt-2 text-xl font-bold">Использованная память</h3>
+                    <pre>{{ selectedTest.memoryUsage }} MB</pre>
+
+                    <h3 class="mt-2 text-xl font-bold">Время работы</h3>
+                    <pre>{{ selectedTest.timeUsage }} s</pre>
                 </div>
             </div>
         </div>
@@ -335,6 +337,8 @@ const submitSolution = async () => {
                 input: test.input,
                 output: test.output,
                 correctOutput: test.correctOutput,
+                memoryUsage: test.memoryUsage,
+                timeUsage: test.timeUsage,
             }
         })
 
