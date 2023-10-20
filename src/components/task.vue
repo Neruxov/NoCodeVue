@@ -38,6 +38,12 @@
 
                     <div v-if="selectedTab.id == 'task'">
                         <h1 class="font-bold text-4xl">{{ id }}. {{ title }}</h1>
+                        <div v-if="tags.length > 0" class="mt-3 flex gap-1.5">
+                            <span v-for="tag in tags" 
+                                  class="rounded-2xl pl-2 pr-2 pt-1 pb-1 text-sm"
+                                 :class="tagStyles[tag]">{{ tagNames[tag] }}</span>
+                        </div>
+
                         <div class="text-xl pt-3" v-html="description"></div>
 
                         <div class="flex justify-between pt-3 mb-1">
@@ -204,6 +210,7 @@ const description = ref("loading...")
 const exampleInput = ref("loading...")
 const exampleOutput = ref("loading...")
 const explanation = ref("loading...")
+const tags = ref([])
 
 const solutions = ref([])
 const selectedSolution = ref({})
@@ -254,6 +261,20 @@ const testResults = {
     SECURITY_VIOLATION: 'SV',
 }
 
+const tagNames = {
+    easy: 'Простая',
+    medium: 'Средняя',
+    hard: 'Сложная',
+    yandex: 'Яндекс',
+}
+
+const tagStyles = {
+    easy: 'text-green-400 bg-green-800',
+    medium: 'text-yellow-400 bg-yellow-800',
+    hard: 'text-red-400 bg-red-800',
+    yandex: 'text-red-400 bg-red-800'
+}
+
 const tests = ref([])
 const selectedTest = ref({})
 
@@ -286,6 +307,7 @@ const loadTask = async () => {
         exampleInput.value = data.exampleInput;
         exampleOutput.value = data.exampleOutput;
         explanation.value = data.explanation;
+        tags.value = data.tags;
 
         const solutionsNew = []
         for (const [key, value] of Object.entries(data.solutions)) {
