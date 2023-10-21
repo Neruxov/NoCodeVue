@@ -71,14 +71,14 @@
                     @click="submitSolution" :disabled="judging">{{ judging ? "Проверка..." : "Сдать решение" }}</button>
 
             <div class="flex" v-if="tests.length > 0">
-                <div class="bg-neutral-925 p-2 pb-1 pt-1 w-[7rem] rounded-xl">
+                <div class="bg-neutral-925 p-2 pb-1 pt-1 w-[7rem] rounded-xl overflow-auto">
                     <button class="w-full mb-1.5 mt-1.5 h-[3rem] text-xl font-bold rounded-xl justify-center flex items-center"
                             :class="selectedTest.id == test.id ? activeTestColors[test.result] : testColors[test.result]"
                             v-for="test in tests"
                             @click="selectTest(test)"
                             >{{ testResults[test.result] }}</button>
                 </div>
-                <div class="pl-5 w-full">
+                <div class="pl-5 w-[calc(100%-7rem)]">
                     <div class="flex justify-between">
                         <h3 class="text-xl font-bold">Вводные данные</h3>
                         <button class="text-neutral-400 hover:text-white"
