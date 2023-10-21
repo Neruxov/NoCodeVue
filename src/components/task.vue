@@ -188,9 +188,10 @@
 <style>
 code, pre {
     font-family: Cascadia Code;
-    background-color: rgb(38, 38, 38);
+    background-color: rgb(32, 32, 32);
     border-radius: 0.5rem;
     padding: 0.25rem;
+    font-size: 1rem;
 }
 </style>
 
