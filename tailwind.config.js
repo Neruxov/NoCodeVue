@@ -11,7 +11,7 @@ export default {
         'code': 'Cascadia Code'
       },
       gridTemplateRows: {
-        'mobile-task': '100% 50% 100%'
+        'mobile-task': '85% 100% 50%'
       },
       colors: {
         'neutral-925': '#202020',

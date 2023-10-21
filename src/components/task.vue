@@ -167,8 +167,8 @@
     .grid-areas-1 {
         grid-template-areas:
             "a"
-            "b"
-            "c";
+            "c"
+            "b";
     }
 }
 
