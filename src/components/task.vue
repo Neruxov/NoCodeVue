@@ -193,6 +193,10 @@ code, pre {
     padding: 0.25rem;
     font-size: 1rem;
 }
+
+pre {
+    padding: 0.4rem;
+}
 </style>
 
 <script setup>
