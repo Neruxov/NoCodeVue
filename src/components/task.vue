@@ -420,7 +420,12 @@ onMounted(async () => {
             const cachedCode = JSON.parse(localStorage.getItem('cachedCode'))
             for (const [key, value] of Object.entries(cachedCode)) {
                 if (value.id == props.id) {
+                    if (value.language == null) value.language = 'PYTHON'
                     editorSettings.value = value.source
+                    editorSettings.language = value.language.toLowerCase()
+                    selectedLanguage.value = languages.find((language) => {
+                        return language.data == value.language
+                    })
                     break
                 }
             }
@@ -441,6 +446,7 @@ window.onbeforeunload = function() {
     cachedCode.push({
         id: props.id,
         source: editor.getValue(),
+        language: selectedLanguage.value.data,
     })
 
     localStorage.setItem('cachedCode', JSON.stringify(cachedCode))
