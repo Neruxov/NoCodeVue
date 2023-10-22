@@ -1,29 +1,8 @@
-# VueJS
+# NoCode
 
-This template should help get you started developing with Vue 3 in Vite.
+This is a project is one of my first web development projects on Vue and at first I was just making the backend for it, but when I tried making websites, I decided to make a frontend for it too. Don't judge my code too strictly as I'm just starting out. Thank you.
 
-## Recommended IDE Setup
+Live version can be found [here](https://nocode.neruxov.xyz/)
+The most interesting task for now is [this one](https://nocode.neruxov.xyz/task/3/)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+.-.
