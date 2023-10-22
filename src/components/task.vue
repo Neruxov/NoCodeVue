@@ -288,6 +288,7 @@ const selectedTab = ref(tabs[0])
 let editor = null
 
 const editorSettings = {
+    value: '',
     language: 'python',
     theme: 'vs-dark-v2',
     fontFamily: 'Cascadia Code',
@@ -411,8 +412,33 @@ onMounted(async () => {
             "rules": []
         }
 
+        if (localStorage.getItem('cachedCode') != null) {
+            const cachedCode = JSON.parse(localStorage.getItem('cachedCode'))
+            for (const [key, value] of Object.entries(cachedCode)) {
+                if (value.id == props.id) {
+                    editorSettings.value = value.source
+                    break
+                }
+            }
+        }
+
         monaco.editor.defineTheme('vs-dark-v2', theme)
         editor = monaco.editor.create(document.getElementById('editor'), editorSettings)
     })
 })
+
+window.onbeforeunload = function() {
+    let cachedCode = localStorage.getItem('cachedCode') != null ? JSON.parse(localStorage.getItem('cachedCode')) : []
+
+    cachedCode = cachedCode.filter((value) => {
+        return value.id != props.id
+    })
+
+    cachedCode.push({
+        id: props.id,
+        source: editor.getValue(),
+    })
+
+    localStorage.setItem('cachedCode', JSON.stringify(cachedCode))
+}
 </script>
