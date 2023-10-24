@@ -153,6 +153,9 @@
                 </div>
             </div>
         </div>
+
+        <!-- footer mobile -->
+        <p class="pb-5 text-center text-xl text-neutral-400 block md:hidden bg-neutral-900">made with 💖 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
     </div>
 </template>
 
