@@ -1,6 +1,6 @@
 <template>
-    <div class="grid grid-rows-mobile-task md:grid-rows-3 grid-cols-1 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full absolute p-3">
-        <div class="grid-area-a bg-neutral-900 overflow-auto rounded-xl justify-between flex flex-col relative">         
+    <div class="md:grid md:grid-rows-3 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full absolute md:p-3">
+        <div class="grid-area-a bg-neutral-900 overflow-auto md:rounded-xl justify-between flex flex-col relative">         
             <div>
                 <div class="bg-neutral-925 p-3 pl-4 flex gap-3">
                     <button class="text-gray-300 hover:text-white"
@@ -62,49 +62,11 @@
                     </div>
                 </div>
             </div>
-            
-            <p class="pb-5 text-center text-xl text-neutral-400">made with 🍕 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+
+            <p class="md:pb-5 text-center text-xl text-neutral-400 hidden md:block">made with 💖 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
         </div>
-        <div class="grid-area-b bg-neutral-900 overflow-auto p-5 rounded-xl">
-            <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
-                    :class="judging ? 'bg-purple-900' : 'bg-purple-800 hover:bg-purple-700'"
-                    @click="submitSolution" :disabled="judging">{{ judging ? "Проверка..." : "Сдать решение" }}</button>
 
-            <div class="flex" v-if="tests.length > 0">
-                <div class="bg-neutral-925 p-2 pb-1 pt-1 w-[7rem] rounded-xl overflow-auto">
-                    <button class="w-full mb-1.5 mt-1.5 h-[3rem] text-xl font-bold rounded-xl justify-center flex items-center"
-                            :class="selectedTest.id == test.id ? activeTestColors[test.result] : testColors[test.result]"
-                            v-for="test in tests"
-                            @click="selectTest(test)"
-                            >{{ testResults[test.result] }}</button>
-                </div>
-                <div class="pl-5 w-[calc(100%-7rem)]">
-                    <div class="flex justify-between">
-                        <h3 class="text-xl font-bold">Вводные данные</h3>
-                        <button class="text-neutral-400 hover:text-white"
-                                        @click="copyText(selectedTest.input)">Скопировать</button>
-                    </div>
-                    <pre>{{ selectedTest.input }}</pre>
-
-                    <div class="mt-2 flex justify-between">
-                        <h3 class="text-xl font-bold">Правильный вывод</h3>
-                        <button class="text-neutral-400 hover:text-white"
-                                        @click="copyText(selectedTest.correctOutput)">Скопировать</button>
-                    </div>
-                    <pre>{{ selectedTest.correctOutput }}</pre>
-
-                    <h3 class="mt-2 text-xl font-bold">Ваш вывод</h3>
-                    <pre>{{ selectedTest.output }}</pre>
-
-                    <h3 class="mt-2 text-xl font-bold">Использованная память</h3>
-                    <pre>{{ selectedTest.memoryUsage }} MB</pre>
-
-                    <h3 class="mt-2 text-xl font-bold">Время работы</h3>
-                    <pre>{{ selectedTest.timeUsage }} s</pre>
-                </div>
-            </div>
-        </div>
-        <div class="grid-area-c bg-neutral-900 overflow-auto p-5 rounded-xl">
+        <div class="grid-area-b bg-neutral-900 overflow-auto p-5 md:rounded-xl h-[66%] md:h-auto">
             <Listbox v-model="selectedLanguage" @update:model-value="changeEditorLanguage">
                 <div class="relative mt-1">
                     <ListboxButton 
@@ -152,24 +114,57 @@
 
             <div id="editor" class="font-code w-full h-[calc(100%-3.3rem)] mt-2 pt-2 pb-2 rounded-xl bg-neutral-925 relative z-0"></div>
         </div>
+        <div class="grid-area-c bg-neutral-900 overflow-auto p-5 md:rounded-xl">
+            <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
+                    :class="judging ? 'bg-purple-900' : 'bg-purple-800 hover:bg-purple-700'"
+                    @click="submitSolution" :disabled="judging">{{ judging ? "Проверка..." : "Сдать решение" }}</button>
+
+            <div class="flex" v-if="tests.length > 0">
+                <div class="bg-neutral-925 p-2 pb-1 pt-1 w-[7rem] rounded-xl overflow-auto">
+                    <button class="w-full mb-1.5 mt-1.5 h-[3rem] text-xl font-bold rounded-xl justify-center flex items-center"
+                            :class="selectedTest.id == test.id ? activeTestColors[test.result] : testColors[test.result]"
+                            v-for="test in tests"
+                            @click="selectTest(test)"
+                            >{{ testResults[test.result] }}</button>
+                </div>
+                <div class="pl-5 w-[calc(100%-7rem)]">
+                    <div class="flex justify-between">
+                        <h3 class="text-xl font-bold">Вводные данные</h3>
+                        <button class="text-neutral-400 hover:text-white"
+                                        @click="copyText(selectedTest.input)">Скопировать</button>
+                    </div>
+                    <pre>{{ selectedTest.input }}</pre>
+
+                    <div class="mt-2 flex justify-between">
+                        <h3 class="text-xl font-bold">Правильный вывод</h3>
+                        <button class="text-neutral-400 hover:text-white"
+                                        @click="copyText(selectedTest.correctOutput)">Скопировать</button>
+                    </div>
+                    <pre>{{ selectedTest.correctOutput }}</pre>
+
+                    <h3 class="mt-2 text-xl font-bold">Ваш вывод</h3>
+                    <pre>{{ selectedTest.output }}</pre>
+
+                    <h3 class="mt-2 text-xl font-bold">Использованная память</h3>
+                    <pre>{{ selectedTest.memoryUsage }} MB</pre>
+
+                    <h3 class="mt-2 text-xl font-bold">Время работы</h3>
+                    <pre>{{ selectedTest.timeUsage }} s</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- footer mobile -->
+        <p class="pb-5 text-center text-xl text-neutral-400 block md:hidden bg-neutral-900">made with 💖 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
     </div>
 </template>
 
 <style scoped>
 .grid-areas-1 {
     grid-template-areas:
-        "a c"
-        "a c"
-        "b c";
-}
-
-@media (max-width: 768px) {
-    .grid-areas-1 {
-        grid-template-areas:
-            "a"
-            "c"
-            "b";
-    }
+        "a b"
+        "a b"
+        "c b";
 }
 
 .grid-area-a {
@@ -292,6 +287,7 @@ const selectedTab = ref(tabs[0])
 let editor = null
 
 const editorSettings = {
+    value: '',
     language: 'python',
     theme: 'vs-dark-v2',
     fontFamily: 'Cascadia Code',
@@ -415,8 +411,39 @@ onMounted(async () => {
             "rules": []
         }
 
+        if (localStorage.getItem('cachedCode') != null) {
+            const cachedCode = JSON.parse(localStorage.getItem('cachedCode'))
+            for (const [key, value] of Object.entries(cachedCode)) {
+                if (value.id == props.id) {
+                    if (value.language == null) value.language = 'PYTHON'
+                    editorSettings.value = value.source
+                    editorSettings.language = value.language.toLowerCase()
+                    selectedLanguage.value = languages.find((language) => {
+                        return language.data == value.language
+                    })
+                    break
+                }
+            }
+        }
+
         monaco.editor.defineTheme('vs-dark-v2', theme)
         editor = monaco.editor.create(document.getElementById('editor'), editorSettings)
     })
 })
+
+window.onbeforeunload = function() {
+    let cachedCode = localStorage.getItem('cachedCode') != null ? JSON.parse(localStorage.getItem('cachedCode')) : []
+
+    cachedCode = cachedCode.filter((value) => {
+        return value.id != props.id
+    })
+
+    cachedCode.push({
+        id: props.id,
+        source: editor.getValue(),
+        language: selectedLanguage.value.data,
+    })
+
+    localStorage.setItem('cachedCode', JSON.stringify(cachedCode))
+}
 </script>
