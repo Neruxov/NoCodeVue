@@ -63,7 +63,7 @@
                 </div>
             </div>
             
-            <p class="pb-5 text-center text-xl text-neutral-400">made with 💖 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+            <p class="pb-5 text-center text-xl text-neutral-400">made with 🍕 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
         </div>
         <div class="grid-area-b bg-neutral-900 overflow-auto p-5 rounded-xl">
             <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
