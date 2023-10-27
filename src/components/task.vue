@@ -216,6 +216,8 @@ const solutions = ref([])
 const selectedSolution = ref({})
 const selectedSolutionColorized = ref(null)
 
+let isEmpty = true
+
 const languageNames = {
     'PYTHON': 'Python',
     'JAVA': 'Java',
@@ -374,6 +376,7 @@ const submitSolution = async () => {
 
 const changeEditorLanguage = async () => {
     monaco.editor.setModelLanguage(editor.getModel(), selectedLanguage.value.data.toLowerCase())
+    setTemplate(selectedLanguage.value.data)
 }
 
 const selectTest = async (test) => {
@@ -393,10 +396,6 @@ const changeSolution = async (solution) => {
 
 const copyText = async (code) => {
     navigator.clipboard.writeText(code)
-}
-
-const colorizeCode = async (code, language) => {
-    return monaco.editor.colorize(code, language, editorSettings)
 }
 
 onMounted(async () => {
@@ -421,6 +420,8 @@ onMounted(async () => {
                     selectedLanguage.value = languages.find((language) => {
                         return language.data == value.language
                     })
+
+                    isEmpty = false
                     break
                 }
             }
@@ -428,8 +429,28 @@ onMounted(async () => {
 
         monaco.editor.defineTheme('vs-dark-v2', theme)
         editor = monaco.editor.create(document.getElementById('editor'), editorSettings)
+
+        if (isEmpty) setTemplate(selectedLanguage.value.data)
     })
 })
+
+const colorizeCode = async (code, language) => {
+    return monaco.editor.colorize(code, language, editorSettings)
+}
+
+
+const setTemplate = async (language) => {
+   fetch('https://judger.neruxov.xyz/api/v1/tasks/template?id=' + props.id + '&language=' + language).then(response => {
+        if (response.status != 200) throw new Error('Template not found')
+        return response.text();
+    }).then(data => {
+        editor.setValue(data)
+    }).catch(error => {
+        console.log(error);
+        editor.setValue("")
+    }); 
+}
+
 
 window.onbeforeunload = function() {
     let cachedCode = localStorage.getItem('cachedCode') != null ? JSON.parse(localStorage.getItem('cachedCode')) : []
