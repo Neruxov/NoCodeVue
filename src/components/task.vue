@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <p class="md:pb-5 text-center text-xl text-neutral-400 hidden md:block">made with 💖 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+            <p class="md:pb-5 text-center text-xl text-neutral-400 hidden md:block">made with 🍕 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
         </div>
 
         <div class="grid-area-b bg-neutral-900 overflow-auto p-5 md:rounded-xl h-[66%] md:h-auto">
@@ -155,7 +155,7 @@
         </div>
 
         <!-- footer mobile -->
-        <p class="pb-5 text-center text-xl text-neutral-400 block md:hidden bg-neutral-900">made with 💖 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+        <p class="pb-5 text-center text-xl text-neutral-400 block md:hidden bg-neutral-900">made with 🍕 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
     </div>
 </template>
 
