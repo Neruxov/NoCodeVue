@@ -216,8 +216,6 @@ const solutions = ref([])
 const selectedSolution = ref({})
 const selectedSolutionColorized = ref(null)
 
-let isEmpty = true
-
 const languageNames = {
     'PYTHON': 'Python',
     'JAVA': 'Java',
@@ -322,11 +320,8 @@ const loadTask = async () => {
 
         solutions.value = solutionsNew
         selectedSolution.value = solutionsNew[0]
-        if (selectedSolution.value != null) {
-            colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
-                selectedSolutionColorized.value = response
-            })
-        } else {
+
+        if (selectedSolution.value == null) {
             selectedSolutionColorized.value = ""
         }
     }).catch(error => {
@@ -375,8 +370,15 @@ const submitSolution = async () => {
 }
 
 const changeEditorLanguage = async () => {
+    localStorage.setItem('sl-' + props.id + '-' + editor.getModel().getLanguageId().toLowerCase(), editor.getValue())
+
     monaco.editor.setModelLanguage(editor.getModel(), selectedLanguage.value.data.toLowerCase())
-    setTemplate(selectedLanguage.value.data)
+    
+    if (localStorage.getItem('sl-' + props.id + '-' + selectedLanguage.value.data.toLowerCase()) != null) {
+        editor.setValue(localStorage.getItem('sl-' + props.id + '-' + selectedLanguage.value.data.toLowerCase()))
+    } else {
+        setTemplate(selectedLanguage.value.data)
+    }
 }
 
 const selectTest = async (test) => {
@@ -410,27 +412,22 @@ onMounted(async () => {
             "rules": []
         }
 
-        if (localStorage.getItem('cachedCode') != null) {
-            const cachedCode = JSON.parse(localStorage.getItem('cachedCode'))
-            for (const [key, value] of Object.entries(cachedCode)) {
-                if (value.id == props.id) {
-                    if (value.language == null) value.language = 'PYTHON'
-                    editorSettings.value = value.source
-                    editorSettings.language = value.language.toLowerCase()
-                    selectedLanguage.value = languages.find((language) => {
-                        return language.data == value.language
-                    })
-
-                    isEmpty = false
-                    break
-                }
-            }
+        if (localStorage.getItem('sl-' + props.id + '-' + selectedLanguage.value.data.toLowerCase()) != null) {
+            editorSettings.value = localStorage.getItem('sl-' + props.id + '-' + selectedLanguage.value.data.toLowerCase())
+        } else {
+            setTemplate(selectedLanguage.value.data)
         }
 
         monaco.editor.defineTheme('vs-dark-v2', theme)
         editor = monaco.editor.create(document.getElementById('editor'), editorSettings)
 
-        if (isEmpty) setTemplate(selectedLanguage.value.data)
+        setTimeout(() => {
+            if (selectedSolutionColorized.value == null) {
+                colorizeCode(selectedSolution.value.source, selectedSolution.value.language.toLowerCase()).then(response => {
+                    selectedSolutionColorized.value = response
+                })
+            }
+        }, 1000)
     })
 })
 
@@ -453,18 +450,6 @@ const setTemplate = async (language) => {
 
 
 window.onbeforeunload = function() {
-    let cachedCode = localStorage.getItem('cachedCode') != null ? JSON.parse(localStorage.getItem('cachedCode')) : []
-
-    cachedCode = cachedCode.filter((value) => {
-        return value.id != props.id
-    })
-
-    cachedCode.push({
-        id: props.id,
-        source: editor.getValue(),
-        language: selectedLanguage.value.data,
-    })
-
-    localStorage.setItem('cachedCode', JSON.stringify(cachedCode))
+    localStorage.setItem('sl-' + props.id + '-' + selectedLanguage.value.data.toLowerCase(), editor.getValue())
 }
 </script>
