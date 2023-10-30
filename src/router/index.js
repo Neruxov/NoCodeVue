@@ -4,7 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 const routes = [
   {
     path: '/',
-    redirect: '/task/1'
+    redirect: '/tasks/'
   },
   {
     path: '/task/:id',
@@ -13,10 +13,19 @@ const routes = [
     props: (route) => ({ id: Number(route.params.id) })
   },
   {
+    path: '/tasks',
+    name: 'Tasks',
+    component: () => import('../components/tasks.vue')
+  },
+  {
     path: '/404',
     name: '404',
-    component: () => import('../components/404.vue')
-  }
+    redirect: '/tasks',
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/404',
+  },
 ]
 
 const router = createRouter({

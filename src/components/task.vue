@@ -63,7 +63,7 @@
                 </div>
             </div>
 
-            <p class="md:pb-5 text-center text-xl text-neutral-400 hidden md:block">made with 🍕 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+            <Footer class="mb-5 hidden md:block"></Footer>
         </div>
 
         <div class="grid-area-b bg-neutral-900 overflow-auto p-5 md:rounded-xl h-[66%] md:h-auto">
@@ -154,8 +154,8 @@
             </div>
         </div>
 
-        <!-- footer mobile -->
-        <p class="pb-5 text-center text-xl text-neutral-400 block md:hidden bg-neutral-900">made with 🍕 by <a class="text-neutral-200 hover:text-white" href="https://github.com/Neruxov">Neruxov</a> © 2023</p>
+    
+        <Footer class="block md:hidden bg-neutral-900 pb-5"></Footer>
     </div>
 </template>
 
@@ -203,7 +203,9 @@ import router from '../router'
 import { onMounted, ref } from 'vue'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
-import loader from "@monaco-editor/loader";
+import loader from "@monaco-editor/loader"
+import { tagNames, tagStyles } from '../constants'
+import Footer from './footer.vue'
 
 const props = defineProps({
     id: Number,
@@ -263,20 +265,6 @@ const testResults = {
     TIME_LIMIT: 'TL',
     MEMORY_LIMIT: 'ML',
     SECURITY_VIOLATION: 'SV',
-}
-
-const tagNames = {
-    easy: 'Простая',
-    medium: 'Средняя',
-    hard: 'Сложная',
-    yandex: 'Яндекс',
-}
-
-const tagStyles = {
-    easy: 'text-green-400 bg-green-800',
-    medium: 'text-yellow-400 bg-yellow-800',
-    hard: 'text-red-400 bg-red-800',
-    yandex: 'text-red-400 bg-red-800'
 }
 
 const tests = ref([])
@@ -438,7 +426,6 @@ onMounted(async () => {
 const colorizeCode = async (code, language) => {
     return monaco.editor.colorize(code, language, editorSettings)
 }
-
 
 const setTemplate = async (language) => {
    fetch('https://judger.neruxov.xyz/api/v1/tasks/template?id=' + props.id + '&language=' + language).then(response => {
