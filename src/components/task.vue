@@ -369,6 +369,8 @@ const loadTask = async () => {
         if (selectedSolution.value == null) {
             selectedSolutionColorized.value = ""
         }
+
+        document.title = 'NoCode | ' + data.title
     }).catch(error => {
         console.log(error);
         router.push({ name: '404' })
