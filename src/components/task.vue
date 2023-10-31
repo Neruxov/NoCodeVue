@@ -1,161 +1,181 @@
 <template>
-    <div class="md:grid md:grid-rows-3 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full absolute md:p-3">
-        <div class="grid-area-a bg-neutral-900 overflow-auto md:rounded-xl justify-between flex flex-col relative">         
-            <div>
-                <div class="bg-neutral-925 p-3 pl-4 flex gap-3">
-                    <button class="text-gray-300 hover:text-white"
-                            v-for="tab in tabs"
-                            :class="selectedTab.id == tab.id ? 'text-white' : ''"
-                            @click="changeTab(tab)"
-                            >{{ tab.name }}</button>
-                </div>
+    <div class="bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full absolute">
+        <div class="flex justify-center">
+            <div class="font-bold md:ml-3 md:mr-3 md:mt-3 bg-neutral-900 flex justify-between gap-5 p-3 w-full md:w-[60%] md:rounded-xl">
+                <div v-if="prevTask == null" class="w-[40%] text-right"></div>
+                <button @click="redirectTo('/task/' + prevTask.id)" v-if="prevTask != null"
+                        class="w-[40%] text-left">
+                    ← {{ prevTask.id }}. {{ prevTask.title }}
+                </button>
 
-                <div class="p-5">
-                    <div v-if="selectedTab.id == 'solution'">
-                        <p v-if="explanation == null" class="pb-1 text-gray-300">Объяснение отсутствует.</p>
-                        <div v-if="explanation != null" 
-                             class="text-xl pb-3" 
-                             v-html="explanation">
-                        </div>
-                        
-                        <p v-if="solutions.length == 0" class="text-gray-300">Решения отсутствуют.</p>
-                        <div v-if="solutions.length > 0">
-                            <div class="bg-neutral-875 p-2 pl-4 pr-4 flex rounded-t-xl justify-between">
-                                <div class="flex gap-3">
-                                    <button class="text-gray-300 hover:text-white"
-                                            v-for="solution in solutions"
-                                            :class="solution.language == selectedSolution.language ? 'text-white' : ''"
-                                            @click="changeSolution(solution)"
-                                    >{{ languageNames[solution.language] }}</button>
-                                </div>
-                                <button class="text-neutral-400 hover:text-white"
-                                        @click="copyText(selectedSolution.source)">Скопировать</button>
+                <button class="w-[20%] text-center" @click="redirectTo('/tasks')">К списку задач</button>
+                
+                <button @click="redirectTo('/task/' + nextTask.id)" v-if="nextTask != null"
+                        class="w-[40%] text-right">
+                    {{ nextTask.id }}. {{ nextTask.title }} →
+                </button>
+                <div v-if="nextTask == null" class="w-[40%] text-right"></div>
+            </div>
+        </div>
+
+        <div class="md:grid md:grid-rows-3 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full md:h-[calc(100%-3.8rem)] absolute md:p-3">
+            <div class="grid-area-a bg-neutral-900 overflow-auto md:rounded-xl justify-between flex flex-col relative">         
+                <div>
+                    <div class="bg-neutral-925 p-3 pl-4 flex gap-3">
+                        <button class="text-gray-300 hover:text-white"
+                                v-for="tab in tabs"
+                                :class="selectedTab.id == tab.id ? 'text-white' : ''"
+                                @click="changeTab(tab)"
+                                >{{ tab.name }}</button>
+                    </div>
+
+                    <div class="p-5">
+                        <div v-if="selectedTab.id == 'solution'">
+                            <p v-if="explanation == null" class="pb-1 text-gray-300">Объяснение отсутствует.</p>
+                            <div v-if="explanation != null" 
+                                class="text-xl pb-3" 
+                                v-html="explanation">
                             </div>
-                            <div class="p-2 bg-neutral-925 rounded-b-xl font-code"
-                                 v-html="selectedSolutionColorized"></div>
+                            
+                            <p v-if="solutions.length == 0" class="text-gray-300">Решения отсутствуют.</p>
+                            <div v-if="solutions.length > 0">
+                                <div class="bg-neutral-875 p-2 pl-4 pr-4 flex rounded-t-xl justify-between">
+                                    <div class="flex gap-3">
+                                        <button class="text-gray-300 hover:text-white"
+                                                v-for="solution in solutions"
+                                                :class="solution.language == selectedSolution.language ? 'text-white' : ''"
+                                                @click="changeSolution(solution)"
+                                        >{{ languageNames[solution.language] }}</button>
+                                    </div>
+                                    <button class="text-neutral-400 hover:text-white"
+                                            @click="copyText(selectedSolution.source)">Скопировать</button>
+                                </div>
+                                <div class="p-2 bg-neutral-925 rounded-b-xl font-code"
+                                    v-html="selectedSolutionColorized"></div>
+                            </div>
+                        </div>
+
+                        <div v-if="selectedTab.id == 'task'">
+                            <h1 class="font-bold text-4xl">{{ id }}. {{ title }}</h1>
+                            <div v-if="tags.length > 0" class="mt-3 flex gap-1.5">
+                                <span v-for="tag in tags" 
+                                    class="rounded-2xl pl-2 pr-2 pt-1 pb-1 text-sm"
+                                    :class="tagStyles[tag]">{{ tagNames[tag] }}</span>
+                            </div>
+
+                            <div class="text-xl pt-3" v-html="description"></div>
+
+                            <div class="flex justify-between pt-3 mb-1">
+                                <h3 class="text-2xl font-bold">Пример вводных данных</h3>
+                                <button class="text-neutral-400 hover:text-white"
+                                                @click="copyText(exampleInput)">Скопировать</button>
+                            </div>
+                            <pre>{{ exampleInput }}</pre>
+
+                            <div class="flex justify-between pt-3 mb-1">
+                                <h3 class="text-2xl font-bold">Пример выходных данных</h3>
+                                <button class="text-neutral-400 hover:text-white"
+                                                @click="copyText(exampleOutput)">Скопировать</button>
+                            </div>
+                            <pre>{{ exampleOutput }}</pre>
                         </div>
                     </div>
+                </div>
 
-                    <div v-if="selectedTab.id == 'task'">
-                        <h1 class="font-bold text-4xl">{{ id }}. {{ title }}</h1>
-                        <div v-if="tags.length > 0" class="mt-3 flex gap-1.5">
-                            <span v-for="tag in tags" 
-                                  class="rounded-2xl pl-2 pr-2 pt-1 pb-1 text-sm"
-                                 :class="tagStyles[tag]">{{ tagNames[tag] }}</span>
-                        </div>
+                <Footer class="mb-5 hidden md:block"></Footer>
+            </div>
 
-                        <div class="text-xl pt-3" v-html="description"></div>
+            <div class="grid-area-b bg-neutral-900 overflow-auto p-5 md:rounded-xl h-[66%] md:h-auto">
+                <Listbox v-model="selectedLanguage" @update:model-value="changeEditorLanguage">
+                    <div class="relative mt-1">
+                        <ListboxButton 
+                        class="relative w-full cursor-default rounded-lg bg-neutral-925 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 sm:text-sm"
+                        >
+                        <span class="block truncate text-white text-base font-medium">{{ selectedLanguage.name }}</span>
+                        <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                            <ChevronUpDownIcon
+                            class="h-5 w-5 text-gray-400"
+                            aria-hidden="true"
+                            />
+                        </span>
+                        </ListboxButton>
 
-                        <div class="flex justify-between pt-3 mb-1">
-                            <h3 class="text-2xl font-bold">Пример вводных данных</h3>
+                        <ListboxOptions
+                            class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-neutral-925 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10 absolute">
+                            <ListboxOption
+                            v-slot="{ active, selected }"
+                            v-for="language in languages"
+                            :key="language.name"
+                            :value="language"
+                            as="template">
+                            <li
+                                :class="[
+                                active ? 'bg-neutral-700 text-white' : 'text-gray-300',
+                                'relative cursor-default select-none py-2 pl-10 pr-4',
+                                ]">
+                                <span
+                                :class="[
+                                    selected ? 'font-medium' : 'font-normal',
+                                    'block truncate text-base',
+                                ]"
+                                >{{ language.name }}</span>
+                                <span
+                                v-if="selected"
+                                class="absolute inset-y-0 left-0 flex items-center pl-3 text-purple-500"
+                                >
+                                <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                                </span>
+                            </li>
+                            </ListboxOption>
+                        </ListboxOptions>
+                    </div>
+                </Listbox>
+
+                <div id="editor" class="font-code w-full h-[calc(100%-3.3rem)] mt-2 pt-2 pb-2 rounded-xl bg-neutral-925 relative z-0"></div>
+            </div>
+            <div class="grid-area-c bg-neutral-900 overflow-auto p-5 md:rounded-xl">
+                <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
+                        :class="judging ? 'bg-purple-900' : 'bg-purple-800 hover:bg-purple-700'"
+                        @click="submitSolution" :disabled="judging">{{ judging ? "Проверка..." : "Сдать решение" }}</button>
+
+                <div class="flex" v-if="tests.length > 0">
+                    <div class="bg-neutral-925 p-2 pb-1 pt-1 w-[7rem] rounded-xl overflow-auto">
+                        <button class="w-full mb-1.5 mt-1.5 h-[3rem] text-xl font-bold rounded-xl justify-center flex items-center"
+                                :class="selectedTest.id == test.id ? activeTestColors[test.result] : testColors[test.result]"
+                                v-for="test in tests"
+                                @click="selectTest(test)"
+                                >{{ testResults[test.result] }}</button>
+                    </div>
+                    <div class="pl-5 w-[calc(100%-7rem)]">
+                        <div class="flex justify-between">
+                            <h3 class="text-xl font-bold">Вводные данные</h3>
                             <button class="text-neutral-400 hover:text-white"
-                                            @click="copyText(exampleInput)">Скопировать</button>
+                                            @click="copyText(selectedTest.input)">Скопировать</button>
                         </div>
-                        <pre>{{ exampleInput }}</pre>
+                        <pre>{{ selectedTest.input }}</pre>
 
-                        <div class="flex justify-between pt-3 mb-1">
-                            <h3 class="text-2xl font-bold">Пример выходных данных</h3>
+                        <div class="mt-2 flex justify-between">
+                            <h3 class="text-xl font-bold">Правильный вывод</h3>
                             <button class="text-neutral-400 hover:text-white"
-                                            @click="copyText(exampleOutput)">Скопировать</button>
+                                            @click="copyText(selectedTest.correctOutput)">Скопировать</button>
                         </div>
-                        <pre>{{ exampleOutput }}</pre>
+                        <pre>{{ selectedTest.correctOutput }}</pre>
+
+                        <h3 class="mt-2 text-xl font-bold">Ваш вывод</h3>
+                        <pre>{{ selectedTest.output }}</pre>
+
+                        <h3 class="mt-2 text-xl font-bold">Использованная память</h3>
+                        <pre>{{ selectedTest.memoryUsage }} MB</pre>
+
+                        <h3 class="mt-2 text-xl font-bold">Время работы</h3>
+                        <pre>{{ selectedTest.timeUsage }} s</pre>
                     </div>
                 </div>
             </div>
 
-            <Footer class="mb-5 hidden md:block"></Footer>
+        
+            <Footer class="block md:hidden bg-neutral-900 pb-5"></Footer>
         </div>
-
-        <div class="grid-area-b bg-neutral-900 overflow-auto p-5 md:rounded-xl h-[66%] md:h-auto">
-            <Listbox v-model="selectedLanguage" @update:model-value="changeEditorLanguage">
-                <div class="relative mt-1">
-                    <ListboxButton 
-                    class="relative w-full cursor-default rounded-lg bg-neutral-925 py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 sm:text-sm"
-                    >
-                    <span class="block truncate text-white text-base font-medium">{{ selectedLanguage.name }}</span>
-                    <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                        <ChevronUpDownIcon
-                        class="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                        />
-                    </span>
-                    </ListboxButton>
-
-                    <ListboxOptions
-                        class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-neutral-925 py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm z-10 absolute">
-                        <ListboxOption
-                        v-slot="{ active, selected }"
-                        v-for="language in languages"
-                        :key="language.name"
-                        :value="language"
-                        as="template">
-                        <li
-                            :class="[
-                            active ? 'bg-neutral-700 text-white' : 'text-gray-300',
-                            'relative cursor-default select-none py-2 pl-10 pr-4',
-                            ]">
-                            <span
-                            :class="[
-                                selected ? 'font-medium' : 'font-normal',
-                                'block truncate text-base',
-                            ]"
-                            >{{ language.name }}</span>
-                            <span
-                            v-if="selected"
-                            class="absolute inset-y-0 left-0 flex items-center pl-3 text-purple-500"
-                            >
-                            <CheckIcon class="h-5 w-5" aria-hidden="true" />
-                            </span>
-                        </li>
-                        </ListboxOption>
-                    </ListboxOptions>
-                </div>
-            </Listbox>
-
-            <div id="editor" class="font-code w-full h-[calc(100%-3.3rem)] mt-2 pt-2 pb-2 rounded-xl bg-neutral-925 relative z-0"></div>
-        </div>
-        <div class="grid-area-c bg-neutral-900 overflow-auto p-5 md:rounded-xl">
-            <button class="w-full p-2.5 text-2xl font-bold rounded-xl mb-5" 
-                    :class="judging ? 'bg-purple-900' : 'bg-purple-800 hover:bg-purple-700'"
-                    @click="submitSolution" :disabled="judging">{{ judging ? "Проверка..." : "Сдать решение" }}</button>
-
-            <div class="flex" v-if="tests.length > 0">
-                <div class="bg-neutral-925 p-2 pb-1 pt-1 w-[7rem] rounded-xl overflow-auto">
-                    <button class="w-full mb-1.5 mt-1.5 h-[3rem] text-xl font-bold rounded-xl justify-center flex items-center"
-                            :class="selectedTest.id == test.id ? activeTestColors[test.result] : testColors[test.result]"
-                            v-for="test in tests"
-                            @click="selectTest(test)"
-                            >{{ testResults[test.result] }}</button>
-                </div>
-                <div class="pl-5 w-[calc(100%-7rem)]">
-                    <div class="flex justify-between">
-                        <h3 class="text-xl font-bold">Вводные данные</h3>
-                        <button class="text-neutral-400 hover:text-white"
-                                        @click="copyText(selectedTest.input)">Скопировать</button>
-                    </div>
-                    <pre>{{ selectedTest.input }}</pre>
-
-                    <div class="mt-2 flex justify-between">
-                        <h3 class="text-xl font-bold">Правильный вывод</h3>
-                        <button class="text-neutral-400 hover:text-white"
-                                        @click="copyText(selectedTest.correctOutput)">Скопировать</button>
-                    </div>
-                    <pre>{{ selectedTest.correctOutput }}</pre>
-
-                    <h3 class="mt-2 text-xl font-bold">Ваш вывод</h3>
-                    <pre>{{ selectedTest.output }}</pre>
-
-                    <h3 class="mt-2 text-xl font-bold">Использованная память</h3>
-                    <pre>{{ selectedTest.memoryUsage }} MB</pre>
-
-                    <h3 class="mt-2 text-xl font-bold">Время работы</h3>
-                    <pre>{{ selectedTest.timeUsage }} s</pre>
-                </div>
-            </div>
-        </div>
-
-    
-        <Footer class="block md:hidden bg-neutral-900 pb-5"></Footer>
     </div>
 </template>
 
@@ -290,6 +310,39 @@ const editorSettings = {
     }
 }
 
+const nextTask = ref({})
+const prevTask = ref({})
+
+const loadTasks = async () => {
+    fetch('https://judger.neruxov.xyz/api/v1/tasks/get-all')
+        .then(response => response.json())
+        .then(data => {
+            const index = data.findIndex(task => task.id == props.id)
+            if (index == -1) {
+                router.push({ name: '404' })
+                return
+            }
+
+            if (index == 0) {
+                prevTask.value = null
+            } else {
+                prevTask.value = data[index - 1]
+            }
+
+            if (index == data.length - 1) {
+                nextTask.value = null
+            } else {
+                nextTask.value = data[index + 1]
+            }
+        }).catch(err => {
+            console.log(err)
+        })
+}
+
+const redirectTo = (href) => {
+    window.location.href = href
+}
+
 const loadTask = async () => {
     fetch('https://judger.neruxov.xyz/api/v1/tasks/get?id=' + props.id).then(response => {
         if (response.status != 200) throw new Error('Task not found')
@@ -393,6 +446,7 @@ const copyText = async (code) => {
 }
 
 onMounted(async () => {
+    loadTasks()
     loadTask()
     loader.init().then((monaco) => {
         const theme = {
