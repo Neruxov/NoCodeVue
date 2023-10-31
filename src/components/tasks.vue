@@ -14,9 +14,8 @@
                     </div>
                     
                     <div class="text-2xl flex justify-between cursor-pointer"
-                        v-for="task in tasks"
-                        @click="redirectToTask(task.id)">
-                        <p><strong>{{ task.id }}.</strong> {{ task.title }}</p>
+                        v-for="task in tasks">
+                        <a class="font-normal" :href="/task/ + task.id"><strong>{{ task.id }}.</strong> {{ task.title }}</a>
                         
                         <div v-if="task.tags.length > 0" class="flex gap-1.5">
                             <span v-for="tag in task.tags" 
