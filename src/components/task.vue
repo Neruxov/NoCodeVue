@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <div class="md:grid md:grid-rows-3 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full md:h-[calc(100%-3.8rem)] absolute md:p-3">
+        <div class="md:grid md:grid-rows-3 md:grid-cols-2 grid-areas-1 gap-2.5 bg-neutral-950 text-white overflow-auto md:overflow-hidden w-full h-full md:h-[calc(100%-3.8rem)] absolute md:p-3">
             <div class="grid-area-a bg-neutral-900 overflow-auto md:rounded-xl justify-between flex flex-col relative">         
                 <div>
                     <div class="bg-neutral-925 p-3 pl-4 flex gap-3">
