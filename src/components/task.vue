@@ -269,11 +269,11 @@ const props = defineProps({
     id: Number,
 })
 
-const title = ref("loading...")
-const description = ref("loading...")
-const exampleInput = ref("loading...")
-const exampleOutput = ref("loading...")
-const explanation = ref("loading...")
+const title = ref("Загрузка...")
+const description = ref("Загрузка...")
+const exampleInput = ref({})
+const exampleOutput = ref("Загрузка...")
+const explanation = ref("Загрузка...")
 const tags = ref([])
 
 const solutions = ref([])
@@ -410,6 +410,8 @@ const loadTask = async () => {
         exampleOutput.value = data.exampleOutput;
         explanation.value = data.explanation;
         tags.value = data.tags;
+
+        runInput.value = data.exampleInput;
 
         const solutionsNew = []
         for (const [key, value] of Object.entries(data.solutions)) {
