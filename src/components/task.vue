@@ -184,7 +184,7 @@
     grid-template-areas:
         "a b"
         "a b"
-        "c b";
+        "a c";
 }
 
 .grid-area-a {
