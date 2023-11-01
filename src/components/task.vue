@@ -65,14 +65,19 @@
 
                             <div class="text-xl pt-3" v-html="description"></div>
 
-                            <div class="flex justify-between pt-3 mb-1">
-                                <h3 class="text-2xl font-bold">Пример вводных данных</h3>
-                                <button class="text-neutral-400 hover:text-white"
-                                                @click="copyText(exampleInput)">Скопировать</button>
-                            </div>
-                            <pre>{{ exampleInput }}</pre>
+                            <h3 class="text-2xl font-bold mt-2">Пример вводных данных</h3>
+                            <div v-for="value, key in exampleInput">
+                                <div class="flex justify-between pt-3 mb-1">
+                                    <p class="text-xl font-bold">{{ key }} =</p>
+                                    <button class="text-neutral-400 hover:text-white"
+                                                    @click="copyText(value)">Скопировать</button>
+                                </div>
 
-                            <div class="flex justify-between pt-3 mb-1">
+                                <pre class="w-full">{{ value }}</pre>
+                            </div>
+
+                            
+                            <div class="flex justify-between pt-3 mb-1 mt-1">
                                 <h3 class="text-2xl font-bold">Пример выходных данных</h3>
                                 <button class="text-neutral-400 hover:text-white"
                                                 @click="copyText(exampleOutput)">Скопировать</button>
@@ -189,10 +194,14 @@
                                 @click="runSolution" :disabled="judging">{{ judging ? "Ожидайте..." : "Запустить" }}</button>
 
                         <h3 class="mb-2 text-xl font-bold">Вводные данные</h3>
-                        <textarea v-model="runInput" class="w-full h-[2.5rem] rounded-xl bg-neutral-925 p-2 text-white font-code overflow-hidden outline-none resize-none"
+
+                        <div v-for="value, key in exampleInput">
+                            <p class="font-bold">{{ key }} =</p>
+                            <textarea v-model="runInput[key]" class="w-full h-[2.5rem] rounded-xl bg-neutral-925 p-2 text-white font-code overflow-hidden outline-none resize-none"
                                   @input="autoResizeTextArea"></textarea>
-                    
-                        <div v-if="runOutput.length > 0">
+                        </div>
+          
+                        <div>
                             <h3 class="mt-2 mb-2 text-xl font-bold">Вывод</h3>
                             <pre>{{ runOutput }}</pre>
                         </div>
@@ -335,7 +344,7 @@ const selectedTab = ref({
     'c': tabs.c[0]
 })
 
-const runInput = ref("")
+const runInput = ref({})
 const runOutput = ref("")
 
 let editor = null
