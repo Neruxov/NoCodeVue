@@ -10,9 +10,7 @@ export default {
         'text': 'SF Pro Display',
         'code': 'Cascadia Code'
       },
-      gridTemplateRows: {
-        'mobile-task': '85% 100% 50%'
-      },
+      gridTemplateRows: {},
       colors: {
         'neutral-925': '#202020',
         'neutral-875': '#262626'
