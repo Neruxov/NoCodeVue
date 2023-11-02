@@ -202,7 +202,7 @@
                         </div>
           
                         <div>
-                            <h3 class="mt-2 mb-2 text-xl font-bold">Вывод</h3>
+                            <h3 class="mt-2 mb-2 text-xl font-bold truncate">Вывод</h3>
                             <pre>{{ runOutput }}</pre>
                         </div>
                     </div>
