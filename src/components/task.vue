@@ -261,8 +261,8 @@ import router from '../router'
 import { onMounted, ref } from 'vue'
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/vue'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
-import loader from "@monaco-editor/loader"
 import { tagNames, tagStyles } from '../constants'
+import loader from "@monaco-editor/loader"
 import Footer from './footer.vue'
 
 const props = defineProps({
@@ -539,6 +539,7 @@ const copyText = async (code) => {
 onMounted(async () => {
     loadTasks()
     loadTask()
+
     loader.init().then((monaco) => {
         const theme = {
             "base": "vs-dark",
