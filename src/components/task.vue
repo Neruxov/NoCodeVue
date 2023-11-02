@@ -404,14 +404,19 @@ const loadTask = async () => {
         if (response.status != 200) throw new Error('Task not found')
         return response.json();
     }).then(data => {
-        title.value = data.title;
-        description.value = data.description;
-        exampleInput.value = data.exampleInput;
-        exampleOutput.value = data.exampleOutput;
-        explanation.value = data.explanation;
-        tags.value = data.tags;
+        title.value = data.title
+        description.value = data.description
+        exampleInput.value = data.exampleInput
+        exampleOutput.value = data.exampleOutput
+        explanation.value = data.explanation
+        tags.value = data.tags
 
-        runInput.value = data.exampleInput;
+        const exampleInputCopy = {}
+        for (const [key, value] of Object.entries(data.exampleInput)) {
+            exampleInputCopy[key] = value
+        }
+
+        runInput.value = exampleInputCopy
 
         const solutionsNew = []
         for (const [key, value] of Object.entries(data.solutions)) {
